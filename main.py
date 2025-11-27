@@ -1,6 +1,4 @@
 
-## main.py
-```python
 import heapq
 
 
@@ -18,16 +16,67 @@ def dijkstra_shortest_path(graph, start, goal):
         - total_cost: sum of weights along the path
         If start/goal is not in graph or goal is unreachable, return ([], None).
     """
-    # TODO Step 1: Briefly write what this function should compute.
-    # TODO Step 2: Re-phrase the problem in simple English in a comment.
-    # TODO Step 3: Identify inputs, outputs, and main structures (dist, parent, heap).
-    # TODO Step 4: Plan Dijkstra: how to update distances and parents.
-    # TODO Step 5: Write pseudocode for Dijkstra using a priority queue (heap).
-    # TODO Step 6: Translate your pseudocode into Python with heapq.
-    # TODO Step 7: Test with small graphs where you know the correct answer.
-    # TODO Step 8: Check that your solution's complexity is about O((V + E) log V).
+    # This function computes the shortest path from `start` to `goal` in a
+    # weighted graph with non-negative edge weights using Dijkstra's algorithm.
+    # Inputs:
+    # - graph: dict node -> list of (neighbor, weight)
+    # - start, goal: node keys
+    # Outputs:
+    # - (path, total_cost) where path is a list of nodes from start to goal
+    #   with minimum total weight, and total_cost is the sum of weights.
+    # If start/goal not in graph or goal unreachable, return ([], None).
 
-    raise NotImplementedError("dijkstra_shortest_path is not implemented yet")
+    # Quick edge checks
+    if start not in graph or goal not in graph:
+        return [], None
+
+    # distance estimates and parent pointers
+    dist = {start: 0}
+    parent = {}
+
+    # min-heap of (cost, node)
+    heap = [(0, start)]
+
+    # Standard Dijkstra loop
+    while heap:
+        cost_u, u = heapq.heappop(heap)
+
+        # If this popped entry is stale (larger than known dist), skip it
+        if cost_u > dist.get(u, float("inf")):
+            continue
+
+        # Early exit if we reached the goal
+        if u == goal:
+            break
+
+        for v, w in graph.get(u, []):
+            if w < 0:
+                # Dijkstra requires non-negative weights; skip negatives
+                continue
+            new_cost = cost_u + w
+            if new_cost < dist.get(v, float("inf")):
+                dist[v] = new_cost
+                parent[v] = u
+                heapq.heappush(heap, (new_cost, v))
+
+    # If goal was never reached
+    if goal not in dist:
+        return [], None
+
+    # Reconstruct path from start to goal
+    path = []
+    node = goal
+    while True:
+        path.append(node)
+        if node == start:
+            break
+        node = parent.get(node)
+        if node is None:
+            # No path found
+            return [], None
+
+    path.reverse()
+    return path, dist[goal]
 
 
 if __name__ == "__main__":

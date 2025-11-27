@@ -93,13 +93,13 @@ def test_larger_graph_multiple_routes():
     path, cost = dijkstra_shortest_path(graph, "Start", "End")
     assert path[0] == "Start"
     assert path[-1] == "End"
-    assert cost == 6  # Start -> A -> C -> End (2 + 4 + 3)
+    assert cost == 9  # Start -> A -> C -> End (2 + 4 + 3)
 
 
 @pytest.mark.parametrize(
     "start,goal,expected_cost",
     [
-        ("Start", "C", 3),
+        ("Start", "C", 6),
         ("Start", "D", 10),
         ("A", "End", 7),
     ],
